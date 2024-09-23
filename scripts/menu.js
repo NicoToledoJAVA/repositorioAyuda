@@ -69,7 +69,7 @@ async function exhibirVinos(vinos) {
                                 <h5 class="card-title">${vinoCompleto.name}</h5>
                                 <p class="card-text">${vinoCompleto.type}. ${vinoCompleto.year} <br>
                             <b>    $${precioFormateado} </b> </p>
-                                <button type="button" class="btn btn-primary" id="btn-${vinoCompleto.id}" value="${vinoCompleto.id}">Agregar al Carrito</button>
+                                <button type="button" class="button button-blue" id="btn-${vinoCompleto.id}" value="${vinoCompleto.id}">Comprar</button>
                             </div>
                         </article>
                     </div> 

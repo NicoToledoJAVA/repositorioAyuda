@@ -26,3 +26,33 @@
  align-items: center !important;
  text-align: center;
   }
+
+
+  .button {
+    font-family: "Courier New";
+    color: #ffffff;
+    font-size: 24px;
+    padding: 4px;
+    text-decoration: none;
+    border-radius: 100px;
+    box-shadow: 0px 1px 3px #666666;
+    text-shadow: 1px 1px 3px #666666;
+    cursor: pointer;
+  }
+  .button-blue {
+    border: 2px solid #003366;
+    background: linear-gradient(to bottom, #0074e4, #003366);
+  }
+  .button-blue:hover {
+    border: 2px solid #3595ee;
+    background: linear-gradient(to bottom, #666666, #000000);
+    box-shadow: 0px 4px 20px linear-gradient(to bottom, #0074e4, #003366);
+    text-shadow: 1px 2px 10px linear-gradient(to bottom, #0074e4, #003366);
+    color: green;
+  }
+  .button-blue:active {
+    border: 2px solid #3595ee;
+    color: #FF69B4;
+    background: linear-gradient(to bottom, #ffffff, #666666);
+    box-shadow: 0px 4px 20px linear-gradient(to bottom, #0074e4, #003366);
+  }
