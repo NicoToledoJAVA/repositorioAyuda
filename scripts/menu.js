@@ -57,19 +57,19 @@ async function exhibirVinos(vinos) {
         // Obtener el vino completo
         const vinoCompleto = await obtenerVinoPorId(vino.id);
         // Formatear el precio con separadores de miles
-        const precioFormateado = vinoCompleto.price.toLocaleString('es-AR');
+        const precioFormateado = vino.price.toLocaleString('es-AR');
         // Agregar el HTML del vino, incluyendo la imagen y la descripción
-        if (vinoCompleto) {
+        if (precioFormateado) {
             categoriaActual[vino.category] += `
                 <div class="container">
                     <div class="row">
                         <article class="card centrada">
-                            <img src="data:image/jpeg;base64,${vinoCompleto.photo}" class="card-img-top" alt="Ilustracion de ${vinoCompleto.name}" style="width:120px; height:176px;">
+                            <img src="data:image/jpeg;base64,${vino.photo}" class="card-img-top" alt="Ilustracion de ${vino.name}" style="width:120px; height:176px;">
                             <div class="card-body">
-                                <h5 class="card-title">${vinoCompleto.name}</h5>
-                                <p class="card-text">${vinoCompleto.type}. ${vinoCompleto.year} <br>
+                                <h5 class="card-title">${vino.name}</h5>
+                                <p class="card-text">${vino.type}. ${vino.year} <br>
                             <b>    $${precioFormateado} </b> </p>
-                                <button type="button" class="button button-blue" id="btn-${vinoCompleto.id}" value="${vinoCompleto.id}">Comprar</button>
+                                <button type="button" class="button button-blue" id="btnComprar-${vino.id}" value="${vino.id}">Comprar</button>
                             </div>
                         </article>
                     </div> 
@@ -77,33 +77,36 @@ async function exhibirVinos(vinos) {
         }
     }
 
-
+    // Agregar el contenido HTML de cada categoría en su sección correspondiente
     for (const categoria in categoriaActual) {
         const seccion = document.getElementById(categoria);
         seccion.innerHTML = categoriaActual[categoria];
 
-        // Agregar event listener a los botones
-        seccion.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', () => {
-                const vino = vinos.find(p => p.id == button.value);
-                const vinoObj = {
-                    id: vino.id,
-                    nombre: vino.name,
-                    precio: vino.price
-                };
+        // Agregar event listener a los botones de compra
+        setTimeout(() => { // Añadimos un pequeño retraso para asegurarnos de que el HTML ha sido renderizado
+            const botones = seccion.querySelectorAll("[id^='btnComprar-']");
+            if (botones.length === 0) {
+                console.error(`No se encontraron botones en la categoría ${categoria}`);
+            } else {
+                console.log(`Botones encontrados: ${botones.length} en la categoría ${categoria}`);
+            }
 
-                // Almacenar el objeto en localStorage
-                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-                carrito.push(vinoObj);
-                localStorage.setItem('carrito', JSON.stringify(carrito));
-
-                // Mostrar el carrito actualizado
-                mostrarCarrito();
+            botones.forEach(button => {
+                button.addEventListener('click', () => {
+                    const vinoId = button.value; // Obtener el id del vino
+                    const vino = vinos.find(v => v.id == vinoId); // Buscar el vino correspondiente por id
+                    const vinoObj = {
+                        id: vino.id,
+                        nombre: vino.name,
+                        precio: vino.price
+                    };
+                    crearCarrito(vinoObj);
+                    console.log(`Vino agregado al carrito: ${vino.name}`);
+                });
             });
-        });
+        }, 100); // Un retraso de 100ms para dar tiempo a que el DOM se actualice
     }
 }
-
 
 let carrito = [];
 function agregarAlCarrito(id) {
@@ -134,49 +137,54 @@ async function obtenerVinoPorId(id) {
     return vinoEncontrado || null; // Devuelve el vino o null si no se encuentra
 }
 
-
-function mostrarCarrito() {
-    const carritoDiv = document.getElementById("carrito");
-
-    // Obtener el carrito desde localStorage
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-    // Crear el contenido HTML para mostrar el carrito
-    let contenido = "<ul class='list-group list-group-flush'>";
-    let precioTotal = 0;
-    carrito.forEach(vino => {
-        precioTotal += parseFloat(vino.price);
-
-        contenido += `
-            <li class="list-group-item">
-                ${vino.name} - $${vino.price}
-                <button type="button" class="btn-close" aria-label="Close" value="${vino.id}"></button>
-            </li>
-        `;
-    });
-    contenido += `<li class="list-group-item">Precio Total de Compra: $${precioTotal}</li></ul>`;
-
-    // Insertar el contenido en el elemento con id "carrito"
-    carritoDiv.innerHTML = contenido;
-
-    // Añadir event listener a los botones "Eliminar"
-    carritoDiv.querySelectorAll('.btn-close').forEach(button => {
-        button.addEventListener('click', () => {
-            eliminarDelCarrito(button.value); // Llamar a la función de eliminar
-        });
-    });
+function crearCarrito(vinoObj){
+    carrito=JSON.parse(localStorage.getItem('carrito')) || [];
+    carrito.push(vinoObj);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    mostrarCarrito(carrito);
 }
 
 function eliminarDelCarrito(id) {
     // Obtener el carrito desde localStorage
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-
-    carrito = carrito.filter(vino => vino.id !== id);
-
+    
+    // Filtrar el carrito
+    carrito = carrito.filter(vino => vino.id.toString() !== id); // Asegurando la comparación de tipos
+    
     // Guardar el carrito actualizado en localStorage
     localStorage.setItem('carrito', JSON.stringify(carrito));
-
+    
     // Volver a mostrar el carrito actualizado
-    mostrarCarrito();
+    mostrarCarrito(carrito); // Pasa el carrito actualizado aquí
+}
+
+function mostrarCarrito(carro = null) {
+    let dentroCarrito = document.getElementById("carrito");
+
+    // Si no se pasa el carrito como argumento, lo obtenemos desde localStorage
+    if (!carro) {
+        carro = JSON.parse(localStorage.getItem('carrito')) || [];
+    }
+
+    let contenido = "<ul class='list-group list-group-flush'>";
+    let precioTotal = 0;
+
+    carro.forEach(vino => {
+        precioTotal += parseFloat(vino.precio);        
+        contenido +=
+        `<li class="list-group-item">${vino.nombre} - $${vino.precio}
+        <button type="button" class="btn-close" aria-label="Close" value="${vino.id}"></button>
+        </li>`;
+    });
+
+    contenido += `<li class="list-group-item">Precio Total de Compra: $${precioTotal}</li></ul>`;
+    dentroCarrito.innerHTML = contenido;
+
+    // Agregar event listener a los botones de eliminar del carrito
+    dentroCarrito.querySelectorAll('.btn-close').forEach(button => {
+        button.addEventListener('click', () => {
+            console.log(`Intentando eliminar el vino con ID: ${button.value}`); // Para verificar el ID
+            eliminarDelCarrito(button.value);
+        });
+    });
 }
