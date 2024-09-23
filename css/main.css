@@ -1,0 +1,28 @@
+.secciones{
+    display: flex;
+}
+
+.categorias {
+    text-align: center;
+    background: linear-gradient(128.84deg, #0f6cbd 20.46%, #3c45ab 72.3%);
+    color: #ffffff;
+    border: 1px solid #0F6CBD;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 28px;
+    line-height: 1.8;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .categorias:hover {
+    border: 2px solid #3595ee;
+    background: linear-gradient(128.84deg, #025caa 20.46%, #222b91 72.3%);
+    box-shadow: 0px 4px 20px linear-gradient(128.84deg, #0f6cbd 20.46%, #3c45ab 72.3%);
+    text-shadow: 1px 2px 10px linear-gradient(128.84deg, #0f6cbd 20.46%, #3c45ab 72.3%);
+    color: #ffffff;
+    font-weight: 900;
+  }
+
+  .centrada {
+ align-items: center !important;
+ text-align: center;
+  }
