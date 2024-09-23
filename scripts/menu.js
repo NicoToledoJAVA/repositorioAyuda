@@ -97,8 +97,10 @@ async function exhibirVinos(vinos) {
                     const vino = vinos.find(v => v.id == vinoId); // Buscar el vino correspondiente por id
                     const vinoObj = {
                         id: vino.id,
-                        nombre: vino.name,
-                        precio: vino.price
+                        name: vino.name,
+                        price: vino.price,
+                        type: vino.type,
+                        year: vino.year
                     };
                     crearCarrito(vinoObj);
                     console.log(`Vino agregado al carrito: ${vino.name}`);
@@ -170,9 +172,10 @@ function mostrarCarrito(carro = null) {
     let precioTotal = 0;
 
     carro.forEach(vino => {
-        precioTotal += parseFloat(vino.precio);        
+        const precioFormateado = vino.price.toLocaleString('es-AR');
+        precioTotal += parseFloat(vino.price);        
         contenido +=
-        `<li class="list-group-item">${vino.nombre} - $${vino.precio}
+        `<li class="list-group-item">${vino.name}. ${vino.type} del ${vino.year} - <b>$${vino.price}</b>
         <button type="button" class="btn-close" aria-label="Close" value="${vino.id}"></button>
         </li>`;
     });
