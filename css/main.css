@@ -27,6 +27,12 @@
  text-align: center;
   }
 
+  .finalLista {
+    font-size: 24px;
+    font-weight: bolder;
+
+  }
+
 
   .button {
     font-family: "Courier New";
